@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 実行時にできるもの
+logs/
+startup_error.log
+*.saving.xlsx
+~$*
+
+# 自分の環境の設定とデータ (公開しない)
+/pipeline_config.json
+/pipeline_config.json.broken
+/work/
+/data/
+
+# サンプルの実行結果 (tools/make_sample_data.py でいつでも作り直せる)
+/sample/work/*
+!/sample/work/.gitkeep
+/sample/input/*/processed/
+/sample/**/converted_originals/
+/sample/pipeline_config.json.broken
+
+# 前処理 (変換) を試したときにできるもの
+/sample/convert_demo/*.xlsx

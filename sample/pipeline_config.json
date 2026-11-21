@@ -1,0 +1,11 @@
+{
+  "work_dir": "work",
+  "input_root": "input",
+  "input_subdir": "input",
+  "product_master": "masters/product_master.xlsx",
+  "customer_master": "masters/customer_master.xlsx",
+  "price_master": "masters/price_master.xlsx",
+  "prefecture_table": "masters/prefecture_table.xlsx",
+  "id_master": "masters/id_master.xlsx",
+  "disabled_suppliers": []
+}

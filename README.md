@@ -18,6 +18,42 @@ BI ツール（Power BI など）でそのまま分析できる **1 つの標準
 
 ---
 
+## こんな作業に心当たりはありませんか
+
+メーカーや販売元の立場で、卸・代理店・販売店から毎月届く販売実績（実績報告、売上明細、出荷実績）を、
+Excel で 1 つの表にまとめている方に向けたツールです。
+
+- 卸ごとに Excel の列の並びや見出しの名前が違い、毎月、不要な列を消して見出しを付け替え、コピー＆ペーストで 1 つの表にまとめている
+- 表題の行や、合計行・小計行が混じっていて、そのまま貼ると集計が合わない
+- 店舗 × 商品の横持ち（クロス集計）の表を、縦持ちに直している
+- 数値が文字列として入っている、容量に「ml」などの単位が付いている、csv や古い形式（.xls）が混じっている
+- 同じ商品なのに卸ごとに書き方が違い（表記ゆれ）、VLOOKUP や XLOOKUP が一致しない
+- マスタに無い商品や得意先が、気づかないまま集計から漏れている
+- 同じファイルを二度取り込んで、数字が二重になったことがある
+- Power BI や Power Query に取り込む前の整形に、毎月時間を取られる
+- 手順が担当者の頭の中と手順書にしかなく、引き継ぎが難しい
+
+関連する言葉: 販売実績の集計、実績報告の統合、複数の Excel ファイルの結合、名寄せ、表記ゆれ、マスタ照合、
+データクレンジング、Power BI の前処理、pandas、openpyxl。
+
+## 作ったきっかけと、変わったこと
+
+メーカーや販売元にとって、自社の出荷データで分かるのは「卸に売った」ところまでです。
+その先の「どの店で、どの商品が、どれだけ売れたか」は、卸から届く販売実績でしか分かりません。
+ところが、その販売実績は卸ごとに形が違い、毎月、手順書を見ながら Excel の手作業で 1 つの表にまとめる必要がありました。
+卸の数が増えるほど時間がかかり、貼り間違いや取り込み漏れに気づきにくい。このツールは、その手作業を置き換えるために作りました。
+
+| これまで（Excel の手作業） | このツールにしてから |
+| --- | --- |
+| 卸ごとに不要な列を消し、見出しを付け替え、ファイル名・計上月・卸名の列を足して貼り合わせる | 卸ごとの変換部品が、自動で同じ形にそろえる。画面でチェックを入れてボタンを押すだけ |
+| 文字列になった数値を直し、容量の単位を置換で消す | 数量・容量・入数を読み取るときに数値へ直す。数値にできない値は「要確認」に出す |
+| 商品名を目で見て直し、VLOOKUP が外れた行を探す | マスタと照合して標準の名前にそろえ、一致しなかった名前だけを一覧（`unmatched_products.xlsx`）に出す |
+| 貼り間違い・取り込み漏れ・二重の取り込みに、後で数字が合わなくなってから気づく | 順番の誤りや同じ処理の二度掛けは実行前に止め、あやしい点は「要確認」として必ず表示する。統合は毎回入力フォルダから作り直し、済んだファイルは別のフォルダへ移すので、貼り足しによる二重計上が起きにくい |
+| 手順書どおりに進められる人しか作業できない | 画面の上から順に実行するだけなので、手順を覚えていなくても同じ結果になる |
+| 卸が 1 社増えると、手作業の手順が 1 社分増える | 変換部品を 1 ファイル足すだけで、共通の処理はそのまま使える |
+
+処理時間のめやすは、同梱のサンプル（3 社分・52 明細）で数秒、3 万行で全ステップ 2〜3 分です（開発に使った PC での実測）。
+
 ## 何を解決するのか
 
 | 困りごと | このツールでの解決 |
@@ -155,6 +191,42 @@ It runs from a GUI: tick the steps and press one button.
 > **Language note**
 > The documentation is bilingual. The GUI, the log messages, the sample data and the column names of the output are in Japanese.
 > The [user guide](docs/user-guide.md#english) has a glossary of the on-screen labels and the columns.
+
+## Does this sound familiar?
+
+This tool is for manufacturers and brand owners who receive monthly sales reports (sell-out / sell-through data)
+from wholesalers, distributors or retailers and consolidate them into one table in Excel.
+
+- Every wholesaler sends a different Excel layout, so each month you delete columns, rename headers and copy-paste everything into one sheet
+- Title rows, total rows and subtotal rows are mixed in, and pasting them as they are breaks the totals
+- You unpivot store × product cross-tab reports into one row per sale
+- Numbers arrive as text, capacities carry units such as "ml", and CSV or legacy .xls files are mixed in
+- The same product is spelled differently by each wholesaler, so VLOOKUP or XLOOKUP fails to match
+- Products or customers missing from the master data silently drop out of the totals
+- The same file has been imported twice and the figures were double-counted
+- Preparing the data for Power BI or Power Query takes time every month
+- The procedure lives in one person's head and a manual, which makes handover difficult
+
+Related terms: consolidating sales reports, merging Excel files with different formats, distributor sales data,
+name matching, inconsistent product names, master data lookup, data cleansing, data preparation for Power BI, pandas, openpyxl.
+
+## Why it was built, and what changed
+
+For a manufacturer or brand owner, its own shipment data shows sales only as far as the wholesaler.
+What happens beyond that point (which store sold which product, and how much) is visible only in the sales reports the wholesalers send.
+Those reports differ in shape from one wholesaler to the next, so every month they had to be consolidated by hand in Excel, following a written procedure.
+The more wholesalers there were, the longer it took, and pasting errors and missing files were hard to notice. This tool was built to replace that manual work.
+
+| Before (manual work in Excel) | With this tool |
+| --- | --- |
+| Delete unneeded columns, rename headers, add file name, month and wholesaler columns, then paste everything together, wholesaler by wholesaler | A converter per wholesaler brings every report into the same shape automatically. Tick the steps and press one button |
+| Fix numbers stored as text and strip units from capacities with find-and-replace | Quantities, capacities and pack sizes are converted to numbers as they are read. Values that cannot be converted are reported as "needs review" |
+| Correct product names by eye and hunt for the rows where VLOOKUP failed | Names are matched against master data and standardised. Only the names that did not match are listed (`unmatched_products.xlsx`) |
+| Pasting errors, missing files and double imports are noticed only later, when the figures do not add up | A wrong order, or running the same step twice, is stopped before it runs, and anything doubtful is always shown as "needs review". The merge is rebuilt from the input folder every time and finished files are moved to another folder, so pasting the same data in twice is unlikely |
+| Only someone who can follow the written procedure can do the work | The steps run from top to bottom on one screen, so the result is the same without memorising the procedure |
+| One more wholesaler means one more manual procedure | Add one converter file. The common steps stay as they are |
+
+As a guide to speed: the bundled sample (three wholesalers, 52 detail rows) takes a few seconds, and 30,000 rows take about 2–3 minutes for all steps (measured on the development PC).
 
 ## What it solves
 
